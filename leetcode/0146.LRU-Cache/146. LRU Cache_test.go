@@ -32,9 +32,9 @@ func MList2Ints(lru *LRUCache) [][]int {
 	res := [][]int{}
 	head := lru.head
 	for head != nil {
-		tmp := []int{head.Key, head.Val}
+		tmp := []int{head.key, head.val}
 		res = append(res, tmp)
-		head = head.Next
+		head = head.next
 	}
 	return res
 }

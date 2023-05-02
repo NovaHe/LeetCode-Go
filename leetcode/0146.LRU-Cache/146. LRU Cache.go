@@ -1,71 +1,66 @@
 package leetcode
 
 type LRUCache struct {
-	head, tail *Node
-	Keys       map[int]*Node
-	Cap        int
+	head     *Node
+	tail     *Node
+	cache    map[int]*Node
+	capacity int
 }
 
 type Node struct {
-	Key, Val   int
-	Prev, Next *Node
+	next *Node
+	prev *Node
+	val  int
+	key  int
 }
 
 func Constructor(capacity int) LRUCache {
-	return LRUCache{Keys: make(map[int]*Node), Cap: capacity}
+	lru := LRUCache{
+		capacity: capacity,
+		head:     &Node{},
+		tail:     &Node{},
+		cache:    make(map[int]*Node, capacity),
+	}
+	lru.head.next = lru.tail
+	lru.tail.prev = lru.head
+	return lru
 }
 
 func (this *LRUCache) Get(key int) int {
-	if node, ok := this.Keys[key]; ok {
-		this.Remove(node)
-		this.Add(node)
-		return node.Val
+	n, ok := this.cache[key]
+	if !ok {
+		return -1
 	}
-	return -1
+	this.remove(n)
+	this.setHead(n)
+	return n.val
 }
 
 func (this *LRUCache) Put(key int, value int) {
-	if node, ok := this.Keys[key]; ok {
-		node.Val = value
-		this.Remove(node)
-		this.Add(node)
-		return
+	n, ok := this.cache[key]
+	if ok {
+		this.remove(n)
 	} else {
-		node = &Node{Key: key, Val: value}
-		this.Keys[key] = node
-		this.Add(node)
+		if len(this.cache) == this.capacity {
+			delete(this.cache, this.tail.prev.key)
+			this.remove(this.tail.prev)
+		}
+		n = &Node{val: value, key: key}
+		this.cache[key] = n
 	}
-	if len(this.Keys) > this.Cap {
-		delete(this.Keys, this.tail.Key)
-		this.Remove(this.tail)
-	}
+	n.val = value
+	this.setHead(n)
 }
 
-func (this *LRUCache) Add(node *Node) {
-	node.Prev = nil
-	node.Next = this.head
-	if this.head != nil {
-		this.head.Prev = node
-	}
-	this.head = node
-	if this.tail == nil {
-		this.tail = node
-		this.tail.Next = nil
-	}
+func (this *LRUCache) remove(n *Node) {
+	n.prev.next = n.next
+	n.next.prev = n.prev
 }
 
-func (this *LRUCache) Remove(node *Node) {
-	if node == this.head {
-		this.head = node.Next
-		node.Next = nil
-		return
-	}
-	if node == this.tail {
-		this.tail = node.Prev
-		node.Prev.Next = nil
-		node.Prev = nil
-		return
-	}
-	node.Prev.Next = node.Next
-	node.Next.Prev = node.Prev
+func (this *LRUCache) setHead(n *Node) {
+	n.next = this.head.next
+	n.prev = this.head
+
+	this.head.next.prev = n
+	this.head.next = n
 }
