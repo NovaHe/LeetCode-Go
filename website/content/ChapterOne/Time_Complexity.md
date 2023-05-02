@@ -34,8 +34,8 @@ weight: 3
 
 ```c
 void hello (int n){
-    for( int sz = 1 ; sz < n ; sz += sz)
-        for( int i = 1 ; i < n ; i ++)
+    for( int sz = 1 ; sz < n ; sz += sz )
+        for( int i = 1 ; i < n ; i ++ )
             cout << "Hello" << endl;
 }
 ```
@@ -45,7 +45,7 @@ void hello (int n){
 ```c
 bool isPrime (int n){
     for( int x = 2 ; x * x <= n ; x ++ )
-        if( n % x == 0)
+        if( n % x == 0 )
             return false;
     return true;
 }
@@ -57,7 +57,7 @@ bool isPrime (int n){
 
 如果回答是 O(n*nlog n + nlog n) = O(n^2log n)，这个答案是错误的。字符串的长度和数组的长度是没有关系的，所以这两个变量应该单独计算。假设最长的字符串长度为 s，数组中有 n 个字符串。对每个字符串排序的时间复杂度是 O(slog s)，将数组中每个字符串都按照字母序排序的时间复杂度是 O(n * slog s)。
 
-将整个字符串数组按照字典序排序的时间复杂度是 O(s * nlog n)。排序算法中的 O(nlog n) 是比较的次数，由于比较的是整型数字，所以每次比较是 O(1)。但是字符串按照字典序比较，时间复杂度是 O(s)。所以字符串数组按照字典序排序的时间复杂度是 O(s * nlog n)。所以整体复杂度是 O(n * slog s) + O(s * nlog n) = O(n\*slog s + s\*nlogn) = O(n\*s\*(log s + log n))
+将整个字符串数组按照字典序排序的时间复杂度是 O(s * nlog n)。排序算法中的 O(nlog n) 是比较的次数，由于比较的是整型数字，所以每次比较是 O(1)。但是字符串按照字典序比较，时间复杂度是 O(s)。所以字符串数组按照字典序排序的时间复杂度是 O(s * nlog n)。所以整体复杂度是 O(n * slog s) + O(s * nlog n) = O(n\*slog s + s\*nlogn) = O(n\*s\*(log s + log n)) = O(n\*s\*log(n\*s)）。
 
 ## 二. 空间复杂度
 
@@ -67,7 +67,7 @@ bool isPrime (int n){
 int sum( int n ){
     assert( n >= 0 )
     int ret = 0;
-    for ( int i = 0 ; i <= n ; i++)
+    for ( int i = 0 ; i <= n ; i ++ )
         ret += i;
     return ret;
 }
@@ -80,7 +80,7 @@ int sum( int n ){
     assert( n >= 0 )
     if ( n == 0 )
         return 0;
-    return n + sum( n - 1);
+    return n + sum( n - 1 );
 }
 ```
 
@@ -96,14 +96,14 @@ int sum( int n ){
 
 ```c
 int binarySearch(int arr[], int l, int r, int target){
-	if( l > r)
+	if( l > r )
 	    return -1;
-    int mid = l + (r-l)/2;//防溢出
+    int mid = l + ( r - l ) / 2; // 防溢出
     if(arr[mid] == target)
         return mid;
-    else if (arr[mid]>target)
+    else if (arr[mid] > target)
         return binarySearch(arr,l,mid-1,target);
-    eles 
+    else
         return binarySearch(arr,mid+1,r,target);
 }
 
@@ -119,16 +119,16 @@ int binarySearch(int arr[], int l, int r, int target){
 ```c
 int f(int n){
     assert( n >= 0 );
-    if( n ==0 )
+    if( n == 0 )
         return 1;
     return f( n - 1 ) + f ( n - 1 );
-
+}
 ```
 
 上述这次递归调用的次数为 2^0^ + 2^1^ + 2^2^ + …… + 2^n^ = 2^n+1^ - 1 = O(2^n)
 
 
-> 关于更加复杂的递归的复杂度分析，请参考，主定理。主定理中针对各种复杂情况都给出了正确的结论。
+> 关于更加复杂的递归的复杂度分析，请参考主定理。主定理中针对各种复杂情况都给出了正确的结论。
 
 
 ----------------------------------------------

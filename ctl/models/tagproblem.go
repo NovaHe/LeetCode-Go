@@ -32,7 +32,7 @@ type TopicTag struct {
 	TranslatedName string     `json:"translatedName"`
 	Slug           string     `json:"slug"`
 	Questions      []Question `json:"questions"`
-	Frequencies    float64    `json:"frequencies"`
+	Frequencies    string     `json:"frequencies"`
 	Typename       string     `json:"__typename"`
 }
 
@@ -180,8 +180,8 @@ type TagLists struct {
 	TagLists []TagList
 }
 
-//| No.      | Title | Solution | Difficulty | TimeComplexity | SpaceComplexity |Favorite| Acceptance |
-//|:--------:|:------- | :--------: | :----------: | :----: | :-----: | :-----: |:-----: |
+// | No.      | Title | Solution | Difficulty | TimeComplexity | SpaceComplexity |Favorite| Acceptance |
+// |:--------:|:------- | :--------: | :----------: | :----: | :-----: | :-----: |:-----: |
 func (tls TagLists) table() string {
 	res := "| No.      | Title | Solution | Difficulty | TimeComplexity | SpaceComplexity |Favorite| Acceptance |\n"
 	res += "|:--------:|:------- | :--------: | :----------: | :----: | :-----: | :-----: |:-----: |\n"
