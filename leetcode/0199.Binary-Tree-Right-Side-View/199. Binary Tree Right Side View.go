@@ -16,7 +16,26 @@ type TreeNode = structures.TreeNode
  * }
  */
 
+// 优化版本，先右子树后左子树
 func rightSideView(root *TreeNode) []int {
+	var dfs func(root *TreeNode, level int)
+	res := []int{}
+	dfs = func(root *TreeNode, level int) {
+		if root == nil {
+			return
+		}
+		if len(res) == level {
+			res = append(res, root.Val)
+		}
+		dfs(root.Right, level+1)
+		dfs(root.Left, level+1)
+
+	}
+	dfs(root, 0)
+	return res
+}
+
+func rightSideView1(root *TreeNode) []int {
 	res := []int{}
 	if root == nil {
 		return res
