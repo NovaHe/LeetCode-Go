@@ -16,105 +16,62 @@ type TreeNode = structures.TreeNode
  * }
  */
 
-// 解法一
-func zigzagLevelOrder(root *TreeNode) [][]int {
-	if root == nil {
-		return [][]int{}
-	}
-	queue := []*TreeNode{}
-	queue = append(queue, root)
-	curNum, nextLevelNum, res, tmp, curDir := 1, 0, [][]int{}, []int{}, 0
-	for len(queue) != 0 {
-		if curNum > 0 {
-			node := queue[0]
-			if node.Left != nil {
-				queue = append(queue, node.Left)
-				nextLevelNum++
-			}
-			if node.Right != nil {
-				queue = append(queue, node.Right)
-				nextLevelNum++
-			}
-			curNum--
-			tmp = append(tmp, node.Val)
-			queue = queue[1:]
+// dfs
+func zigzagLevelOrder2(root *TreeNode) [][]int {
+	var dfs func(root *TreeNode, level int)
+	res := [][]int{}
+	dfs = func(root *TreeNode, level int) {
+		if root == nil {
+			return
 		}
-		if curNum == 0 {
-			if curDir == 1 {
-				for i, j := 0, len(tmp)-1; i < j; i, j = i+1, j-1 {
-					tmp[i], tmp[j] = tmp[j], tmp[i]
-				}
-			}
-			res = append(res, tmp)
-			curNum = nextLevelNum
-			nextLevelNum = 0
-			tmp = []int{}
-			if curDir == 0 {
-				curDir = 1
+		if len(res) > level {
+			if level&1 == 0 {
+				res[level] = append(res[level], root.Val)
 			} else {
-				curDir = 0
+				res[level] = append([]int{root.Val}, res[level]...)
 			}
+
+		} else {
+			res = append(res, []int{root.Val})
 		}
+		dfs(root.Left, level+1)
+		dfs(root.Right, level+1)
 	}
+	dfs(root, 0)
 	return res
 }
 
-// 解法二 递归
-func zigzagLevelOrder0(root *TreeNode) [][]int {
-	var res [][]int
-	search(root, 0, &res)
-	return res
-}
-
-func search(root *TreeNode, depth int, res *[][]int) {
-	if root == nil {
-		return
-	}
-	for len(*res) < depth+1 {
-		*res = append(*res, []int{})
-	}
-	if depth%2 == 0 {
-		(*res)[depth] = append((*res)[depth], root.Val)
-	} else {
-		(*res)[depth] = append([]int{root.Val}, (*res)[depth]...)
-	}
-	search(root.Left, depth+1, res)
-	search(root.Right, depth+1, res)
-}
-
-// 解法三 BFS
-func zigzagLevelOrder1(root *TreeNode) [][]int {
+// bfs
+func zigzagLevelOrder(root *TreeNode) [][]int {
 	res := [][]int{}
 	if root == nil {
 		return res
 	}
 	q := []*TreeNode{root}
-	size, i, j, lay, tmp, flag := 0, 0, 0, []int{}, []*TreeNode{}, false
+	depth := 0
 	for len(q) > 0 {
-		size = len(q)
-		tmp = []*TreeNode{}
-		lay = make([]int, size)
-		j = size - 1
-		for i = 0; i < size; i++ {
-			root = q[0]
-			q = q[1:]
-			if !flag {
-				lay[i] = root.Val
-			} else {
-				lay[j] = root.Val
-				j--
+		size := len(q)
+		for i := 0; i < size; i++ {
+			if q[i].Left != nil {
+				q = append(q, q[i].Left)
 			}
-			if root.Left != nil {
-				tmp = append(tmp, root.Left)
+			if q[i].Right != nil {
+				q = append(q, q[i].Right)
 			}
-			if root.Right != nil {
-				tmp = append(tmp, root.Right)
+		}
+		lay := make([]int, 0, size)
+		if depth&1 == 1 {
+			for i := size - 1; i >= 0; i-- {
+				lay = append(lay, q[i].Val)
 			}
-
+		} else {
+			for i := 0; i < size; i++ {
+				lay = append(lay, q[i].Val)
+			}
 		}
 		res = append(res, lay)
-		flag = !flag
-		q = tmp
+		q = q[size:]
+		depth++
 	}
 	return res
 }
